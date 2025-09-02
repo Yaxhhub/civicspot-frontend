@@ -115,9 +115,11 @@ const MapView = () => {
           <Marker
             latitude={userLocation.latitude}
             longitude={userLocation.longitude}
-            anchor="bottom"
+            anchor="center"
           >
-            <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg animate-pulse" />
+            <div className="w-6 h-6 bg-blue-500 rounded-full border-2 border-white shadow-lg animate-pulse flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
           </Marker>
         )}
 
@@ -127,7 +129,7 @@ const MapView = () => {
             key={report._id}
             latitude={report.location.latitude}
             longitude={report.location.longitude}
-            anchor="bottom"
+            anchor="center"
             onClick={e => {
               e.originalEvent.stopPropagation()
               setSelectedReport(report)
@@ -135,9 +137,11 @@ const MapView = () => {
             }}
           >
             <div
-              className="w-6 h-6 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform"
+              className="w-8 h-8 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-125 transition-transform flex items-center justify-center"
               style={{ backgroundColor: getMarkerColor(report.type) }}
-            />
+            >
+              <div className="w-3 h-3 bg-white rounded-full"></div>
+            </div>
           </Marker>
         ))}
 
@@ -147,15 +151,15 @@ const MapView = () => {
             key={campaign._id}
             latitude={campaign.location.latitude}
             longitude={campaign.location.longitude}
-            anchor="bottom"
+            anchor="center"
             onClick={e => {
               e.originalEvent.stopPropagation()
               setSelectedCampaign(campaign)
               setSelectedReport(null)
             }}
           >
-            <div className="w-8 h-8 bg-purple-500 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-              <Users className="h-4 w-4 text-white" />
+            <div className="w-10 h-10 bg-purple-500 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-125 transition-transform flex items-center justify-center">
+              <Users className="h-5 w-5 text-white" />
             </div>
           </Marker>
         ))}
@@ -271,7 +275,7 @@ const MapView = () => {
       </Map>
 
       {/* Legend */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-4">
+      <div className="absolute bottom-20 left-4 bg-white rounded-lg shadow-lg p-4">
         <h4 className="font-semibold mb-2">Legend</h4>
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
