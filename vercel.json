@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_MAPBOX_TOKEN": "@mapbox_token",
+    "VITE_API_URL": "@api_url"
+  }
+}
