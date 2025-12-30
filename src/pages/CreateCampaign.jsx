@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import axios from 'axios'
+import axios from '../utils/axios'
 import { MapPin, Calendar, CheckCircle, Navigation } from 'lucide-react'
 import Map, { Marker } from 'react-map-gl'
 

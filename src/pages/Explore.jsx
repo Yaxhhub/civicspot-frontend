@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import axios from 'axios'
+import axios from '../utils/axios'
 import { Heart, MessageCircle, Camera, Send } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -16,10 +16,14 @@ const Explore = () => {
 
   const fetchPosts = async () => {
     try {
+      console.log('Fetching posts...')
       const response = await axios.get('/api/posts')
+      console.log('Posts fetched successfully:', response.data.length, 'posts')
+      console.log('First post:', response.data[0])
       setPosts(response.data)
     } catch (error) {
       console.error('Error fetching posts:', error)
+      console.error('Error details:', error.response?.data || error.message)
     } finally {
       setLoading(false)
     }
@@ -66,7 +70,7 @@ const Explore = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-screen py-4 sm:py-8">
       <div className="max-w-2xl mx-auto px-2 sm:px-4">
         <div className="flex justify-between items-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Explore</h1>
@@ -130,19 +134,22 @@ const PostCard = ({ post, user, onLike, onComment }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden"
+      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
     >
-      <div className="p-3 sm:p-4 border-b">
+      <div className="p-4 border-b border-gray-50">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold text-sm sm:text-base">
-              {post.user.name.charAt(0).toUpperCase()}
-            </span>
+          <div className="relative">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-blue-600 rounded-full flex items-center justify-center ring-2 ring-white shadow-md">
+              <span className="text-white font-semibold text-sm">
+                {post.user.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
           </div>
           <div>
-            <h3 className="font-semibold text-sm sm:text-base">{post.user.name}</h3>
+            <h3 className="font-semibold text-gray-900">{post.user.name}</h3>
             {post.campaign && (
-              <p className="text-xs sm:text-sm text-gray-500">at {post.campaign.title}</p>
+              <p className="text-sm text-primary-600 font-medium">📍 {post.campaign.title}</p>
             )}
           </div>
         </div>
@@ -160,20 +167,20 @@ const PostCard = ({ post, user, onLike, onComment }) => {
       />
 
       <div className="p-3 sm:p-4">
-        <div className="flex items-center space-x-4 mb-3">
+        <div className="flex items-center space-x-6 mb-4">
           <button
             onClick={() => onLike(post._id)}
-            className={`flex items-center space-x-1 ${isLiked ? 'text-red-500' : 'text-gray-600'}`}
+            className={`flex items-center space-x-2 px-3 py-2 rounded-full transition-all duration-200 ${isLiked ? 'bg-red-50 text-red-500' : 'hover:bg-gray-50 text-gray-600'}`}
           >
-            <Heart className={`h-5 w-5 sm:h-6 sm:w-6 ${isLiked ? 'fill-current' : ''}`} />
-            <span className="text-sm sm:text-base">{post.likes.length}</span>
+            <Heart className={`h-5 w-5 ${isLiked ? 'fill-current scale-110' : ''} transition-transform`} />
+            <span className="font-medium">{post.likes.length}</span>
           </button>
           <button
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center space-x-1 text-gray-600"
+            className="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-gray-50 text-gray-600 transition-all duration-200"
           >
-            <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
-            <span className="text-sm sm:text-base">{post.comments.length}</span>
+            <MessageCircle className="h-5 w-5" />
+            <span className="font-medium">{post.comments.length}</span>
           </button>
         </div>
 
@@ -267,10 +274,11 @@ const CreatePostModal = ({ onClose, onPostCreated }) => {
         console.log('FormData entry:', key, value)
       }
 
-      await axios.post('/api/posts', formData, {
+      const response = await axios.post('/api/posts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
-
+      
+      console.log('Post created successfully:', response.data)
       onPostCreated()
       onClose()
     } catch (error) {

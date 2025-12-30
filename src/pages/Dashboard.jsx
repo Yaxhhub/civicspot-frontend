@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import axios from 'axios'
+import axios from '../utils/axios'
 import { useAuth } from '../context/AuthContext'
 import { Plus, MapPin, Calendar, AlertTriangle, Users, Camera, Trash2, Heart, MessageCircle } from 'lucide-react'
 
@@ -54,7 +54,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-screen py-4 sm:py-8">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -98,45 +98,53 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-sm">
+          <div className="bg-white/70 backdrop-blur-sm p-3 sm:p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-2 sm:mb-0">
-                <p className="text-gray-600 text-xs sm:text-sm">Reports</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{reports.length}</p>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Reports</p>
+                <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">{reports.length}</p>
               </div>
-              <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-500" />
+              <div className="p-2 bg-red-100 rounded-xl">
+                <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-500" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-sm">
+          <div className="bg-white/70 backdrop-blur-sm p-3 sm:p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-2 sm:mb-0">
-                <p className="text-gray-600 text-xs sm:text-sm">Campaigns</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{campaigns.length}</p>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Campaigns</p>
+                <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">{campaigns.length}</p>
               </div>
-              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
+              <div className="p-2 bg-green-100 rounded-xl">
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-sm">
+          <div className="bg-white/70 backdrop-blur-sm p-3 sm:p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-2 sm:mb-0">
-                <p className="text-gray-600 text-xs sm:text-sm">Resolved</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Resolved</p>
+                <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   {reports.filter(r => r.status === 'resolved').length}
                 </p>
               </div>
-              <MapPin className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+              <div className="p-2 bg-blue-100 rounded-xl">
+                <MapPin className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-sm">
+          <div className="bg-white/70 backdrop-blur-sm p-3 sm:p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-2 sm:mb-0">
-                <p className="text-gray-600 text-xs sm:text-sm">Posts</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{posts.length}</p>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Posts</p>
+                <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-500 bg-clip-text text-transparent">{posts.length}</p>
               </div>
-              <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
+              <div className="p-2 bg-purple-100 rounded-xl">
+                <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
+              </div>
             </div>
           </div>
         </div>

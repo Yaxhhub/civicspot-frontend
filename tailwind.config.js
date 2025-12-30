@@ -7,6 +7,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Poppins', 'ui-sans-serif', 'system-ui'],
+      },
       colors: {
         primary: {
           50: '#eff6ff',

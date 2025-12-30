@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Map, { Marker, Popup } from 'react-map-gl'
-import axios from 'axios'
+import axios from '../utils/axios'
 import { MapPin, Calendar, User, Navigation, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -14,8 +14,8 @@ const MapView = () => {
   const [userLocation, setUserLocation] = useState(null)
   const { user } = useAuth()
   const [viewport, setViewport] = useState({
-    latitude: 40.7128,
-    longitude: -74.0060,
+    latitude: 28.6139, // New Delhi coordinates as default for India
+    longitude: 77.2090,
     zoom: 12
   })
 
@@ -75,9 +75,32 @@ const MapView = () => {
         },
         (error) => {
           console.error('Location error:', error.message)
-          alert('Unable to get your location. Please enable location access.')
+          // Try to get approximate location based on IP
+          fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+              if (data.latitude && data.longitude) {
+                const coords = {
+                  latitude: data.latitude,
+                  longitude: data.longitude
+                }
+                setUserLocation(coords)
+                setViewport(prev => ({
+                  ...prev,
+                  ...coords,
+                  zoom: 12
+                }))
+              }
+            })
+            .catch(() => {
+              alert('Unable to get your location. Please enable location access or check your internet connection.')
+            })
         },
-        { enableHighAccuracy: true, timeout: 10000 }
+        { 
+          enableHighAccuracy: true, 
+          timeout: 15000, 
+          maximumAge: 300000 // 5 minutes
+        }
       )
     } else {
       alert('Geolocation is not supported by this browser.')

@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
-import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { User, Mail, Lock, Eye, EyeOff, Phone } from 'lucide-react'
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' })
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -19,7 +19,7 @@ const Register = () => {
     setError('')
 
     try {
-      await register(formData.name, formData.email, formData.password)
+      await register(formData.name, formData.email, formData.password, formData.phone)
       navigate('/dashboard')
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed')
@@ -88,6 +88,24 @@ const Register = () => {
                     onChange={handleChange}
                     className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Enter your email"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number <span className="text-gray-400 text-sm">(Optional - for WhatsApp updates)</span>
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="+91 9876543210"
                   />
                 </div>
               </div>

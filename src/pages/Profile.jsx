@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import axios from 'axios'
+import axios from '../utils/axios'
 import { Camera, Edit2, Save, X, Trash2, Heart, MessageCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 

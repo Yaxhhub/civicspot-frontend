@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import axios from 'axios'
+import axios from '../utils/axios'
 import { Camera, MapPin, Upload, CheckCircle, Navigation } from 'lucide-react'
 import Map, { Marker } from 'react-map-gl'
 
@@ -12,6 +12,7 @@ const ReportIssue = () => {
     title: '',
     description: '',
     type: 'pothole',
+    customType: '',
     latitude: '',
     longitude: '',
     address: ''
@@ -24,8 +25,8 @@ const ReportIssue = () => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [mapViewport, setMapViewport] = useState({
-    latitude: 40.7128,
-    longitude: -74.0060,
+    latitude: 28.6139, // New Delhi coordinates as default
+    longitude: 77.2090,
     zoom: 12
   })
   
@@ -55,7 +56,39 @@ const ReportIssue = () => {
             zoom: 15
           }))
         },
-        (error) => console.error('Error getting location:', error)
+        (error) => {
+          console.error('Error getting location:', error)
+          // Fallback to IP-based location
+          fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+              if (data.latitude && data.longitude) {
+                const coords = {
+                  latitude: data.latitude,
+                  longitude: data.longitude
+                }
+                setFormData(prev => ({
+                  ...prev,
+                  latitude: coords.latitude.toString(),
+                  longitude: coords.longitude.toString(),
+                  address: `${data.city}, ${data.region}`
+                }))
+                setMapViewport(prev => ({
+                  ...prev,
+                  ...coords,
+                  zoom: 12
+                }))
+              }
+            })
+            .catch(() => {
+              console.log('IP location also failed')
+            })
+        },
+        { 
+          enableHighAccuracy: true, 
+          timeout: 15000,
+          maximumAge: 300000 // 5 minutes
+        }
       )
     }
   }
@@ -200,9 +233,35 @@ const ReportIssue = () => {
                 className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="pothole">Pothole</option>
-                <option value="garbage">Garbage</option>
+                <option value="garbage">Garbage/Litter</option>
+                <option value="streetlight">Broken Street Light</option>
+                <option value="drainage">Drainage Issue</option>
+                <option value="graffiti">Graffiti/Vandalism</option>
+                <option value="traffic">Traffic Signal Issue</option>
+                <option value="sidewalk">Damaged Sidewalk</option>
+                <option value="park">Park Maintenance</option>
+                <option value="noise">Noise Complaint</option>
+                <option value="water">Water Leak</option>
+                <option value="other">Other</option>
               </select>
             </div>
+
+            {formData.type === 'other' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Please specify the issue type
+                </label>
+                <input
+                  type="text"
+                  name="customType"
+                  value={formData.customType || ''}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="Describe the type of issue"
+                />
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -216,6 +275,20 @@ const ReportIssue = () => {
                 required
                 className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder="Brief description of the issue"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description <span className="text-gray-400 text-sm">(Optional)</span>
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="Additional details about the issue (optional)"
               />
             </div>
 
